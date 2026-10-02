@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neden İngiltere? Neden Sanayi Devrimi? — Düşünce okulları</title>
+<style>
+:root{
+  --pamuk:#F1F2EE;      /* ağartılmamış pamuk */
+  --kagit:#FFFFFF;
+  --komur:#26262A;      /* metin */
+  --soluk:#5C5F68;
+  --cizgi:#CDD0D6;
+  --kokboya:#9E2A2B;    /* kökboya, “Türk kırmızısı” */
+  --civit:#1F2D55;      /* çivit */
+  --vurgu:#1F2D55;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--pamuk:#16171B;--kagit:#1E2026;--komur:#E8E8E6;--soluk:#A6A9B1;--cizgi:#3A3D46;--vurgu:#AEB9E0}
+}
+:root[data-theme="dark"]{--pamuk:#16171B;--kagit:#1E2026;--komur:#E8E8E6;--soluk:#A6A9B1;--cizgi:#3A3D46;--vurgu:#AEB9E0}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--pamuk);color:var(--komur)}
+body{font-family:var(--serif);font-size:17px;line-height:1.55}
+a{color:var(--vurgu)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--vurgu);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 60px}
+header h1{font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.1;margin:0 0 .35em;font-weight:600;letter-spacing:-.01em}
+header p{margin:0;max-width:68ch;color:var(--soluk)}
+nav.tabs{display:flex;gap:4px;margin:26px 0 18px;border-bottom:1px solid var(--cizgi);flex-wrap:wrap}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;cursor:pointer;font-family:var(--sans);font-size:15px;color:var(--soluk)}
+nav.tabs button[aria-selected="true"]{color:var(--komur);border-bottom-color:var(--komur);font-weight:600}
+section[hidden]{display:none}
+
+/* Harita */
+.harita{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:900px){.harita{grid-template-columns:1fr}}
+.filtre{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;font-family:var(--sans);font-size:14px;align-items:center}
+.filtre span{color:var(--soluk);margin-right:4px}
+.filtre button{border:1px solid var(--cizgi);background:var(--kagit);padding:6px 11px;border-radius:999px;cursor:pointer}
+.filtre button[aria-pressed="true"]{background:var(--komur);color:var(--pamuk);border-color:var(--komur)}
+.duzlem-cerceve{position:relative;padding:0 0 34px 34px}
+.duzlem{position:relative;aspect-ratio:1/0.92;background:var(--kagit);border:1px solid var(--cizgi);
+  background-image:linear-gradient(var(--cizgi) 1px,transparent 1px),linear-gradient(90deg,var(--cizgi) 1px,transparent 1px);
+  background-size:25% 25%;background-position:-1px -1px}
+@supports not (aspect-ratio:1/1){.duzlem{height:0;padding-bottom:92%}}
+@media (max-width:560px){@supports not (aspect-ratio:1/1){.duzlem{padding-bottom:120%}}}
+/* düğüm konumları */
+.dugum[data-id="fiyat"]{left: 17%; top: 14%; --renk: rgb(136,43,50);}
+.dugum[data-id="komur"]{left: 14%; top: 38%; --renk: rgb(140,42,49);}
+.dugum[data-id="kurum"]{left: 40%; top: 20%; --renk: rgb(107,43,60);}
+.dugum[data-id="tarim"]{left: 27%; top: 55%; --renk: rgb(124,43,54);}
+.dugum[data-id="nicel"]{left: 28%; top: 86%; --renk: rgb(122,43,55);}
+.dugum[data-id="talep"]{left: 58%; top: 62%; --renk: rgb(84,44,67);}
+.dugum[data-id="bilgi"]{left: 74%; top: 82%; --renk: rgb(64,44,74);}
+.dugum[data-id="itibar"]{left: 88%; top: 46%; --renk: rgb(46,45,80);}
+.dugum[data-id="secilim"]{left: 50%; top: 42%; --renk: rgb(95,44,64);}
+.dugum[data-id="marx"]{left: 20%; top: 72%; --renk: rgb(133,43,51);}
+.dugum[data-id="weber"]{left: 84%; top: 30%; --renk: rgb(51,45,78);}
+.duzlem::after{content:"";position:absolute;inset:0;background:var(--kagit);opacity:.72;pointer-events:none}
+.eksen-x{position:absolute;left:34px;right:0;bottom:0;display:flex;justify-content:space-between;font-family:var(--sans);font-size:13px}
+.eksen-y{position:absolute;left:0;top:0;bottom:34px;width:28px;display:flex;flex-direction:column;justify-content:space-between;align-items:center}
+.eksen-y span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--sans);font-size:13px;color:var(--soluk)}
+.eksen-x .m{color:var(--kokboya);font-weight:600}.eksen-x .f{color:var(--civit);font-weight:600}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .eksen-x .f{color:#AEB9E0}:root:not([data-theme="light"]) .eksen-x .m{color:#E08A8A}}
+:root[data-theme="dark"] .eksen-x .f{color:#AEB9E0}:root[data-theme="dark"] .eksen-x .m{color:#E08A8A}
+.serit{position:absolute;left:34px;right:0;bottom:24px;height:4px;background:linear-gradient(90deg,var(--kokboya),var(--civit))}
+.dugum{position:absolute;z-index:2;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:0;cursor:pointer;padding:4px;max-width:150px;text-align:center;transition:opacity .2s}
+.dugum .nokta{width:16px;height:16px;border-radius:50%;background:var(--renk);box-shadow:0 0 0 3px var(--kagit),0 0 0 4px var(--renk)}
+.dugum.klasik .nokta{background:var(--kagit);border:3px solid var(--renk);box-shadow:none}
+.dugum .ad{font-family:var(--sans);font-size:12.5px;line-height:1.2;font-weight:600;background:var(--kagit);padding:1px 4px}
+.dugum .kisi{font-family:var(--sans);font-size:11.5px;color:var(--soluk);line-height:1.15}
+.dugum[aria-pressed="true"] .nokta{transform:scale(1.35)}
+.dugum[aria-pressed="true"] .ad{text-decoration:underline;text-underline-offset:3px}
+.dugum.soluk{opacity:.22}
+@media (max-width:560px){.dugum .ad{display:none}.dugum .kisi{font-size:12px;font-weight:700;color:var(--komur);background:var(--kagit);padding:1px 3px}.duzlem{aspect-ratio:1/1.2}.dugum{max-width:110px}}
+.renk-notu{font-family:var(--sans);font-size:12.5px;color:var(--soluk);margin-top:8px}
+
+/* Panel */
+.panel{background:var(--kagit);border:1px solid var(--cizgi);padding:22px 24px 26px;border-top:5px solid var(--renk,var(--komur))}
+.panel h2{font-size:1.5rem;line-height:1.2;margin:0 0 4px}
+.panel .yazar{font-family:var(--sans);font-size:14px;color:var(--soluk);margin:0 0 14px}
+.panel h3{font-family:var(--sans);font-size:14px;font-weight:700;margin:20px 0 6px;color:var(--komur)}
+.panel p{margin:0 0 10px;max-width:70ch}
+.panel ul{margin:0;padding-left:1.1em}
+.panel li{margin:0 0 6px}
+.rozet{display:inline-block;font-family:var(--sans);font-size:12.5px;padding:2px 9px;border-radius:999px;border:1px solid currentColor;margin-right:6px}
+.rozet.tam{color:#2E6B3A}.rozet.ozet{color:#7A5A12}.rozet.genel{color:var(--kokboya)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rozet.tam{color:#8FD19E}:root:not([data-theme="light"]) .rozet.ozet{color:#E4C27A}:root:not([data-theme="light"]) .rozet.genel{color:#E08A8A}}
+:root[data-theme="dark"] .rozet.tam{color:#8FD19E}:root[data-theme="dark"] .rozet.ozet{color:#E4C27A}:root[data-theme="dark"] .rozet.genel{color:#E08A8A}
+.soru-etiket{font-family:var(--sans);font-size:12.5px;color:var(--soluk)}
+.alinti{border-left:3px solid var(--renk,var(--cizgi));padding:4px 0 4px 14px;margin:12px 0;font-style:italic}
+a.ref{text-decoration:none;font-family:var(--sans);font-size:.78em;vertical-align:.25em;padding:0 1px}
+a.ref:hover{text-decoration:underline}
+.bos p{color:var(--soluk)}
+
+/* Karşılaştır */
+.karsi-secim{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;font-family:var(--sans);font-size:15px}
+.karsi-secim label{display:flex;flex-direction:column;gap:4px}
+select{font:inherit;padding:7px 8px;border:1px solid var(--cizgi);background:var(--kagit);color:var(--komur);min-width:260px}
+.tablo-kap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:var(--kagit);min-width:640px}
+th,td{border:1px solid var(--cizgi);padding:10px 12px;text-align:left;vertical-align:top}
+th{font-family:var(--sans);font-size:14px;width:16%}
+thead th{font-size:16px;font-family:var(--serif)}
+
+/* Sına */
+.sinav{max-width:760px}
+.sinav .ifade{font-size:1.35rem;line-height:1.4;margin:10px 0 18px}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.secenekler button{text-align:left;padding:11px 13px;border:1px solid var(--cizgi);background:var(--kagit);cursor:pointer;font-family:var(--sans);font-size:15px}
+.secenekler button.dogru{border-color:#2E6B3A;box-shadow:inset 4px 0 0 #2E6B3A}
+.secenekler button.yanlis{border-color:var(--kokboya);box-shadow:inset 4px 0 0 var(--kokboya)}
+.geri-bildirim{margin-top:16px;padding:14px 16px;background:var(--kagit);border:1px solid var(--cizgi)}
+.sinav-alt{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-family:var(--sans);font-size:14px;color:var(--soluk);gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--komur);background:var(--komur);color:var(--pamuk);padding:9px 16px;cursor:pointer;font-family:var(--sans);font-size:15px}
+.btn.ikincil{background:none;color:var(--komur)}
+
+/* Kaynakça */
+ol.kaynak{padding-left:2.2em;max-width:90ch}
+ol.kaynak li{margin-bottom:10px}
+ol.kaynak li:target,ol.kaynak li.isik{background:color-mix(in srgb,var(--vurgu) 12%,transparent)}
+.durum{font-family:var(--sans);font-size:13px;color:var(--soluk)}
+.not{font-family:var(--sans);font-size:14px;color:var(--soluk);max-width:80ch}
+.beyan{margin-top:56px;padding:22px 24px;background:var(--kagit);border:1px solid var(--cizgi);font-family:var(--sans);font-size:14.5px;line-height:1.55;max-width:900px}
+.beyan h2{font-family:var(--serif);font-size:1.25rem;margin:0 0 10px}
+.beyan p{margin:0 0 10px}
+.beyan dl{margin:12px 0}
+.beyan dt{font-weight:700;margin-top:10px}
+.beyan dd{margin:2px 0 0}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Neden İngiltere? Neden Sanayi Devrimi?</h1>
+  <p>TRH403 Çağdaş Dünya Tarihi I için bir tartışma haritası. Her okul iki soruya farklı ağırlıkla yanıt verir: sanayileşme neden önce İngiltere’de başladı, ve neden bu kez kalıcı bir büyümeye dönüştü?</p>
+</header>
+
+<p id="js-hata" class="not" hidden style="border:1px solid var(--kokboya);padding:10px 12px;color:var(--komur)">Etkileşimli öğeler bu tarayıcıda yüklenemedi. Sayfayı yenilemeyi ya da farklı bir tarayıcıyla açmayı deneyin.</p>
+<nav class="tabs" role="tablist" aria-label="Bölümler">
+  <button role="tab" aria-selected="true" aria-controls="s-harita" id="t-harita">Harita</button>
+  <button role="tab" aria-selected="false" aria-controls="s-karsi" id="t-karsi">Karşılaştır</button>
+  <button role="tab" aria-selected="false" aria-controls="s-sina" id="t-sina">Kendini sına</button>
+  <button role="tab" aria-selected="false" aria-controls="s-kaynak" id="t-kaynak">Kaynakça</button>
+</nav>
+
+<section id="s-harita" role="tabpanel" aria-labelledby="t-harita">
+  <div class="harita">
+    <div>
+      <div class="filtre" role="group" aria-label="Soruya göre süz">
+        <span>Okulun asıl sorusu:</span>
+        <button data-f="hepsi" aria-pressed="true">Tümü</button>
+        <button data-f="ingiltere" aria-pressed="false">Neden İngiltere?</button>
+        <button data-f="buyume" aria-pressed="false">Neden kalıcı büyüme?</button>
+      </div>
+      <div class="duzlem-cerceve">
+        <div class="eksen-y" aria-hidden="true"><span>Neden İngiltere?</span><span>Neden kalıcı büyüme?</span></div>
+        <div class="duzlem" id="duzlem" aria-label="Okulların konumlandığı düzlem">
+<button class="dugum" data-id="fiyat" data-soru="ingiltere" aria-pressed="false" aria-label="Yüksek ücret, ucuz enerji: Robert C. Allen"><span class="nokta" aria-hidden="true"></span><span class="ad">Yüksek ücret, ucuz enerji</span><span class="kisi">Allen</span></button>
+<button class="dugum" data-id="komur" data-soru="ingiltere" aria-pressed="false" aria-label="Kömür ve sömürgeler: Kenneth Pomeranz"><span class="nokta" aria-hidden="true"></span><span class="ad">Kömür ve sömürgeler</span><span class="kisi">Pomeranz</span></button>
+<button class="dugum" data-id="kurum" data-soru="ingiltere" aria-pressed="false" aria-label="Kurumlar ve inandırıcı taahhüt: Douglass North, Barry Weingast; Acemoglu, Johnson, Robinson"><span class="nokta" aria-hidden="true"></span><span class="ad">Kurumlar ve inandırıcı taahhüt</span><span class="kisi">North ve Weingast</span></button>
+<button class="dugum" data-id="tarim" data-soru="ingiltere" aria-pressed="false" aria-label="Tarımsal yapı ve emek: N. F. R. Crafts; Robert C. Allen; Mark Overton"><span class="nokta" aria-hidden="true"></span><span class="ad">Tarımsal yapı ve emek</span><span class="kisi">Crafts (tarım)</span></button>
+<button class="dugum" data-id="nicel" data-soru="buyume" aria-pressed="false" aria-label="“Devrim” miydi? Nicel revizyon: N. F. R. Crafts, C. Knick Harley"><span class="nokta" aria-hidden="true"></span><span class="ad">“Devrim” miydi? Nicel revizyon</span><span class="kisi">Crafts ve Harley</span></button>
+<button class="dugum" data-id="talep" data-soru="buyume" aria-pressed="false" aria-label="Çalışkanlık devrimi: Jan de Vries; Hans-Joachim Voth"><span class="nokta" aria-hidden="true"></span><span class="ad">Çalışkanlık devrimi</span><span class="kisi">de Vries</span></button>
+<button class="dugum" data-id="bilgi" data-soru="buyume" aria-pressed="false" aria-label="Faydalı bilgi ve Sanayi Aydınlanması: Joel Mokyr; Margaret Jacob, Larry Stewart"><span class="nokta" aria-hidden="true"></span><span class="ad">Faydalı bilgi ve Sanayi Aydınlanması</span><span class="kisi">Mokyr</span></button>
+<button class="dugum" data-id="itibar" data-soru="ikisi" aria-pressed="false" aria-label="Burjuva itibarı ve retorik: Deirdre McCloskey"><span class="nokta" aria-hidden="true"></span><span class="ad">Burjuva itibarı ve retorik</span><span class="kisi">McCloskey</span></button>
+<button class="dugum" data-id="secilim" data-soru="ikisi" aria-pressed="false" aria-label="Malthusçu tuzak ve seçilim: Gregory Clark"><span class="nokta" aria-hidden="true"></span><span class="ad">Malthusçu tuzak ve seçilim</span><span class="kisi">Clark</span></button>
+<button class="dugum klasik" data-id="marx" data-soru="ingiltere" aria-pressed="false" aria-label="İlkel birikim ve sınıf: Karl Marx; Marksist tarihyazımı"><span class="nokta" aria-hidden="true"></span><span class="ad">İlkel birikim ve sınıf</span><span class="kisi">Marx</span></button>
+<button class="dugum klasik" data-id="weber" data-soru="ingiltere" aria-pressed="false" aria-label="Protestan ahlakı: Max Weber"><span class="nokta" aria-hidden="true"></span><span class="ad">Protestan ahlakı</span><span class="kisi">Weber</span></button>
+</div>
+        <div class="serit" aria-hidden="true"></div>
+        <div class="eksen-x" aria-hidden="true"><span class="m">Maddi koşullar</span><span class="f">Fikirler ve kültür</span></div>
+      </div>
+      <p class="renk-notu">Yatay eksen açıklamanın ağırlık merkezini, dikey eksen yanıtladığı soruyu gösterir. Konumlar yorumdur, ölçüm değildir. Renkler, 18. yüzyıl pamuklu baskısının iki boyasından alınmıştır: kökboya (“Türk kırmızısı”) ve çivit. İçi boş halkalar klasik çerçeveleri gösterir. McCloskey ve Clark her iki soruya da yanıt verdiğinden iki süzgeçte de görünür.</p>
+    </div>
+    <div class="panel bos" id="panel" aria-live="polite">
+      <h2>Haritayı nasıl okumalı?</h2>
+      <p>Bir okulun üzerine tıklayın. Her kartta temel tez, işleyiş, kanıtlar, en güçlü itirazlar ve ders slaytlarıyla bağlantısı yer alır.</p>
+      <p>Köşeli parantezli sayılar Kaynakça’ya götürür. Her kartın başındaki rozet, özetin hangi düzeyde kaynağa dayandığını belirtir: <span class="rozet tam">Tam metin</span> <span class="rozet ozet">Özet / tanıtım</span> <span class="rozet genel">Genel bilgi</span></p>
+      <p>Okullar birbirini dışlamak zorunda değildir. Çoğu, aynı olayın farklı bir katmanını açıklar: Allen <em>neden burada icat etmek kârlıydı</em>, Mokyr <em>neden icat durmadı</em>, McCloskey <em>neden icat etmek saygındı</em>, de Vries <em>neden alıcı vardı</em> sorusuna yanıt verir.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s-karsi" role="tabpanel" aria-labelledby="t-karsi">
+  <div class="karsi-secim">
+    <label>Birinci okul<select id="k1"></select></label>
+    <label>İkinci okul<select id="k2"></select></label>
+  </div>
+  <div class="tablo-kap"><table id="ktablo"></table></div>
+</section>
+
+<section id="s-sina" role="tabpanel" aria-labelledby="t-sina">
+  <div class="sinav" id="sinav"><p class="not">Bu bölüm JavaScript gerektirir.</p></div>
+</section>
+
+<section id="s-kaynak" role="tabpanel" aria-labelledby="t-kaynak">
+  <p class="not">Durum notu her kaynağın bu çalışmanın hazırlanmasında ne ölçüde okunduğunu gösterir. “Genel bilgi” rozetli kartlardaki ifadeler, atıf yapmadan önce asıl metinden kontrol edilmelidir. İngilizce kaynaklardan yapılan alıntılar Türkçeye tarafımızdan çevrilmiştir. “İngiltere” adı haritada yerleşik Türkçe kullanıma uygun olarak geniş anlamda kullanılmıştır; Allen ve Crafts’ın verileri çoğunlukla Britanya’ya aittir. Haritada yer almayan önemli bir yaklaşım için bkz. Voigtländer ve Voth’un demografik açıklaması <a href="#k25" class="ref" data-ref="25">[25]</a>.</p>
+  <ol class="kaynak" id="kaynakca"><li id="k1" value="1">Mokyr, J. (2005). The Intellectual Origins of Modern Economic Growth. <i>Journal of Economic History</i>, 65(2), 285–351. doi:10.1017/S0022050705000112<br><span class="durum">Durum: Tam metin (yaklaşık s. 320’ye kadar)</span></li><li id="k2" value="2">McCloskey, D. N. (2010). Bourgeois Dignity: A Revolution in Rhetoric. <i>Cato Unbound</i>, 4 Ekim 2010 (<i>Bourgeois Dignity</i> kitabının yazar özeti).<br><span class="durum">Durum: Tam metin</span></li><li id="k3" value="3">de Vries, J. (1994). The Industrial Revolution and the Industrious Revolution. <i>Journal of Economic History</i>, 54(2), 249–270. doi:10.1017/S0022050700014467<br><span class="durum">Durum: Özet ve kaynakça</span></li><li id="k4" value="4">Allen, R. C. ve Weisdorf, J. L. (2011). Was There an ‘Industrious Revolution’ before the Industrial Revolution? An Empirical Exercise for England, c. 1300–1830. <i>Economic History Review</i>, 64(3), 715–729. doi:10.1111/j.1468-0289.2010.00566.x<br><span class="durum">Durum: Özet</span></li><li id="k5" value="5">Crafts, N. (2005). The First Industrial Revolution: Resolving the Slow Growth/Rapid Industrialization Paradox. <i>Journal of the European Economic Association</i>, 3(2–3), 525–534.<br><span class="durum">Durum: Tam metin (çalışma tebliği sürümü); künye RePEc kaydından doğrulandı</span></li><li id="k6" value="6">Crafts, N. (2004). Steam as a General Purpose Technology: A Growth Accounting Perspective. <i>Economic Journal</i>, 114(495), 338–351.<br><span class="durum">Durum: Özet</span></li><li id="k7" value="7">Allen, R. C. (1999). Tracking the Agricultural Revolution in England. <i>Economic History Review</i>, 52(2), 209–235. doi:10.1111/1468-0289.00123<br><span class="durum">Durum: Özet</span></li><li id="k8" value="8">Mingay, G. (1996). M. Overton, <i>Agricultural Revolution in England: The Transformation of the Agrarian Economy 1500–1850</i> (Cambridge, 1996) üzerine değerlendirme. <i>Reviews in History</i>, no. 12.<br><span class="durum">Durum: Tam metin</span></li><li id="k9" value="9">Voth, H.-J. (1998). Time and Work in Eighteenth-Century London. <i>Journal of Economic History</i>, 58(1), 29–58. doi:10.1017/S0022050700019872<br><span class="durum">Durum: Özet</span></li><li id="k10" value="10">Rubin, J. (2011). Review of Deirdre McCloskey, <i>Bourgeois Dignity</i>. EH.Net, 23 Şubat 2011.<br><span class="durum">Durum: Tam metin (yazarın sitesindeki yeniden basım)</span></li><li id="k11" value="11">Voltaire (1733). <i>Letters on the English</i>, Mektup X: “On Trade”.<br><span class="durum">Durum: Tam metin (İngilizce baskı)</span></li><li id="k12" value="12">Clark, G. ve Ridley, M. (2010). McCloskey’ye yanıt denemeleri, <i>Cato Unbound</i>, Ekim 2010.<br><span class="durum">Durum: Yalnızca editör özetleri</span></li><li id="k13" value="13">NobelPrize.org (2025). Joel Mokyr – Facts. Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel 2025.<br><span class="durum">Durum: Tam metin</span></li><li id="k14" value="14">Allen, R. C. (2011). Why the Industrial Revolution was British: Commerce, Induced Invention, and the Scientific Revolution. <i>Economic History Review</i>, 64(2), 357–384. doi:10.1111/j.1468-0289.2010.00532.x<br><span class="durum">Durum: Tam metin</span></li><li id="k15" value="15">Cox, G. W. (2012). Was the Glorious Revolution a Constitutional Watershed? <i>Journal of Economic History</i>, 72(3), 567–600. doi:10.1017/S0022050712000307<br><span class="durum">Durum: Özet (North–Weingast tezinin ve eleştirilerinin özeti için)</span></li><li id="k16" value="16">Pomeranz, K. (2000). <i>The Great Divergence: China, Europe, and the Making of the Modern World Economy</i>. Princeton: Princeton University Press.<br><span class="durum">Durum: Yayıncı tanıtım metni</span></li><li id="k17" value="17">North, D. C. ve Weingast, B. R. (1989). Constitutions and Commitment: The Evolution of Institutions Governing Public Choice in Seventeenth-Century England. <i>Journal of Economic History</i>, 49(4), 803–832.<br><span class="durum">Durum: Tam metin</span></li><li id="k18" value="18">Acemoglu, D., Johnson, S. ve Robinson, J. (2005). The Rise of Europe: Atlantic Trade, Institutional Change and Economic Growth. <i>American Economic Review</i>, 95, 546–579.<br><span class="durum">Durum: Yalnızca künye doğrulandı; içerik [5] üzerinden</span></li><li id="k19" value="19">Trott, D. Gregory Clark, <i>A Farewell to Alms: A Brief Economic History of the World</i> (Princeton University Press, 2007) üzerine değerlendirme. ANU Press, çevrimiçi yayın.<br><span class="durum">Durum: Tam metin (dergi künyesi ve yıl doğrulanmadı)</span></li><li id="k20" value="20">Humphries, J. ve Schneider, B. (2020). Losing the Thread: A Response to Robert Allen. <i>Economic History Review</i>, 73(4), 1137–1152. doi:10.1111/ehr.12963<br><span class="durum">Durum: Özet</span></li><li id="k21" value="21">Marx, K. (1867). <i>Das Kapital</i>, I. cilt, 31. bölüm. İngilizce ilk baskı (1887), Marxists Internet Archive.<br><span class="durum">Durum: Tam metin (31. bölüm)</span></li><li id="k22" value="22">McCloskey, D. N. (2016). <i>Bourgeois Equality: How Ideas, Not Capital or Institutions, Enriched the World</i>. Chicago: University of Chicago Press.<br><span class="durum">Durum: Yayıncı tanıtımı ve içindekiler</span></li><li id="k23" value="23">Weber, M. (1904–05). Die protestantische Ethik und der Geist des Kapitalismus. <i>Archiv für Sozialwissenschaft und Sozialpolitik</i>, XX–XXI; gözden geçirilmiş basım 1920.<br><span class="durum">Durum: Yalnızca yayın bilgisi (Parsons çevirisinin önsözünden)</span></li><li id="k24" value="24">Dakan, R., Feller, J. ve Anthropic (2025). <i>AI Fluency: Key Terminology Cheat Sheet</i> (4D Çerçevesi). CC BY-NC-SA 4.0.<br><span class="durum">Durum: Tam metin</span></li><li id="k25" value="25">Voigtländer, N. ve Voth, H.-J. (2006). Why England? Demographic Factors, Structural Change and Physical Capital Accumulation during the Industrial Revolution. <i>Journal of Economic Growth</i>, 11(4), 319–361.<br><span class="durum">Durum: Yalnızca künye; haritada yer almayan demografik yaklaşım</span></li></ol>
+</section>
+
+<footer class="beyan" aria-labelledby="beyan-baslik">
+  <h2 id="beyan-baslik">Hazırlanış ve özen beyanı</h2>
+  <p>Bu etkileşimli harita, Ekim 2026’da TRH403 Çağdaş Dünya Tarihi I dersi için Dr. Öğr. Üyesi Buğra Can Bayçifci (Üsküdar Üniversitesi, Tarih Bölümü) ile Anthropic’in geliştirdiği yapay zekâ modeli Claude Opus 5.5’in iş birliğiyle hazırlanmıştır. Bu beyan, Dakan, Feller ve Anthropic’in Yapay Zekâ Akıcılığı Çerçevesi’nin (4D) özen (diligence) yetkinliği doğrultusunda yapay zekânın çalışmadaki rolünü açıkça belirtmek amacıyla yazılmıştır <a href="#k24" class="ref" data-ref="24">[24]</a>.</p>
+  <dl>
+    <dt>Görev paylaşımı (Delegation)</dt>
+    <dd>Konuyu, kapsamı (Allen, North, Pomeranz, McCloskey, Mokyr ve diğerleri), hedef kitleyi, dili ve çevrimdışı çalışma koşulunu ders sorumlusu belirledi. Kaynak taraması ve okuma, özetleme, Türkçe metnin yazımı ve sayfanın kodlanması Claude’a bırakıldı.</dd>
+    <dt>Tanımlama (Description)</dt>
+    <dd>Ders sorumlusu, ürünün öğrencilere yönelik, akademik Türkçeyle yazılmış ve derste işlenen düşünce tarihi ile sanayileşme arasındaki bağları görünür kılan bir araç olmasını istedi.</dd>
+    <dt>Değerlendirme (Discernment)</dt>
+    <dd>İlk sürümün ardından ders sorumlusunun talebiyle ayrı bir doğrulama turu yapıldı. Bu turda yanlış atıflar, kaynağın söylediğini aşan ifadeler ve bir sınıflandırma hatası akademik kaynaklarla karşılaştırılarak düzeltildi. Kaynak taramasında ve doğrulama turunda Claude, ders sorumlusunun hesabında etkin olan “academic-research” becerisini (skill) kullandı. Bu beceri, okunmamış kaynağa atıf yapılmamasını, her kaynağın ne ölçüde okunduğunun kaydedilmesini ve iddiaların kaynaklarla tek tek karşılaştırılmasını şart koşan bir talimat setidir. Haritanın ilk kurulumunda beceri tutarlı biçimde uygulanmadı; doğrulama turunda düzeltilen hataların çoğu bu kısımlardaydı. Her kartın rozeti, özetin dayandığı kaynağın ne ölçüde okunduğunu gösterir. “Kendini sına” bölümündeki ilerleme ve puanlama hatasını bir sorudaki yanlış atfı ve bazı kartlarda yazarın kendi görüşlerinin eleştiriler arasına karıştırılmasını ders sorumlusu fark etti; Claude bunları düzeltti, benzer bir atıf sorununu taşıyan ikinci bir soruyu da değiştirdi.</dd>
+    <dt>Özen (Diligence)</dt>
+    <dd>Yapay zekânın rolü burada açıkça beyan edilmiştir. Claude hata yapabilir; “Genel bilgi” rozetli ifadeler asıl metinden doğrulanmamıştır ve öğrencilerin atıf yapmadan önce asıl kaynaklara başvurması beklenir. Materyali derste kullanan ve öğrencilerle paylaşan kişi olarak nihai akademik sorumluluk ders sorumlusundadır.</dd>
+  </dl>
+</footer>
+</div>
+
+<script>
+window.addEventListener("error",function(){var n=document.getElementById("js-hata");if(n)n.hidden=false;});
+</script>
+<script>
+(function(){
+"use strict";
+const KAYNAK = {
+  1:["Mokyr, J. (2005). The Intellectual Origins of Modern Economic Growth. <i>Journal of Economic History</i>, 65(2), 285–351. doi:10.1017/S0022050705000112","Tam metin (yaklaşık s. 320’ye kadar)"],
+  2:["McCloskey, D. N. (2010). Bourgeois Dignity: A Revolution in Rhetoric. <i>Cato Unbound</i>, 4 Ekim 2010 (<i>Bourgeois Dignity</i> kitabının yazar özeti).","Tam metin"],
+  3:["de Vries, J. (1994). The Industrial Revolution and the Industrious Revolution. <i>Journal of Economic History</i>, 54(2), 249–270. doi:10.1017/S0022050700014467","Özet ve kaynakça"],
+  4:["Allen, R. C. ve Weisdorf, J. L. (2011). Was There an ‘Industrious Revolution’ before the Industrial Revolution? An Empirical Exercise for England, c. 1300–1830. <i>Economic History Review</i>, 64(3), 715–729. doi:10.1111/j.1468-0289.2010.00566.x","Özet"],
+  5:["Crafts, N. (2005). The First Industrial Revolution: Resolving the Slow Growth/Rapid Industrialization Paradox. <i>Journal of the European Economic Association</i>, 3(2–3), 525–534.","Tam metin (çalışma tebliği sürümü); künye RePEc kaydından doğrulandı"],
+  6:["Crafts, N. (2004). Steam as a General Purpose Technology: A Growth Accounting Perspective. <i>Economic Journal</i>, 114(495), 338–351.","Özet"],
+  7:["Allen, R. C. (1999). Tracking the Agricultural Revolution in England. <i>Economic History Review</i>, 52(2), 209–235. doi:10.1111/1468-0289.00123","Özet"],
+  8:["Mingay, G. (1996). M. Overton, <i>Agricultural Revolution in England: The Transformation of the Agrarian Economy 1500–1850</i> (Cambridge, 1996) üzerine değerlendirme. <i>Reviews in History</i>, no. 12.","Tam metin"],
+  9:["Voth, H.-J. (1998). Time and Work in Eighteenth-Century London. <i>Journal of Economic History</i>, 58(1), 29–58. doi:10.1017/S0022050700019872","Özet"],
+  10:["Rubin, J. (2011). Review of Deirdre McCloskey, <i>Bourgeois Dignity</i>. EH.Net, 23 Şubat 2011.","Tam metin (yazarın sitesindeki yeniden basım)"],
+  11:["Voltaire (1733). <i>Letters on the English</i>, Mektup X: “On Trade”.","Tam metin (İngilizce baskı)"],
+  12:["Clark, G. ve Ridley, M. (2010). McCloskey’ye yanıt denemeleri, <i>Cato Unbound</i>, Ekim 2010.","Yalnızca editör özetleri"],
+  13:["NobelPrize.org (2025). Joel Mokyr – Facts. Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel 2025.","Tam metin"],
+  14:["Allen, R. C. (2011). Why the Industrial Revolution was British: Commerce, Induced Invention, and the Scientific Revolution. <i>Economic History Review</i>, 64(2), 357–384. doi:10.1111/j.1468-0289.2010.00532.x","Tam metin"],
+  15:["Cox, G. W. (2012). Was the Glorious Revolution a Constitutional Watershed? <i>Journal of Economic History</i>, 72(3), 567–600. doi:10.1017/S0022050712000307","Özet (North–Weingast tezinin ve eleştirilerinin özeti için)"],
+  16:["Pomeranz, K. (2000). <i>The Great Divergence: China, Europe, and the Making of the Modern World Economy</i>. Princeton: Princeton University Press.","Yayıncı tanıtım metni"],
+  17:["North, D. C. ve Weingast, B. R. (1989). Constitutions and Commitment: The Evolution of Institutions Governing Public Choice in Seventeenth-Century England. <i>Journal of Economic History</i>, 49(4), 803–832.","Tam metin"],
+  18:["Acemoglu, D., Johnson, S. ve Robinson, J. (2005). The Rise of Europe: Atlantic Trade, Institutional Change and Economic Growth. <i>American Economic Review</i>, 95, 546–579.","Yalnızca künye doğrulandı; içerik [5] üzerinden"],
+  19:["Trott, D. Gregory Clark, <i>A Farewell to Alms: A Brief Economic History of the World</i> (Princeton University Press, 2007) üzerine değerlendirme. ANU Press, çevrimiçi yayın.","Tam metin (dergi künyesi ve yıl doğrulanmadı)"],
+  20:["Humphries, J. ve Schneider, B. (2020). Losing the Thread: A Response to Robert Allen. <i>Economic History Review</i>, 73(4), 1137–1152. doi:10.1111/ehr.12963","Özet"],
+  21:["Marx, K. (1867). <i>Das Kapital</i>, I. cilt, 31. bölüm. İngilizce ilk baskı (1887), Marxists Internet Archive.","Tam metin (31. bölüm)"],
+  22:["McCloskey, D. N. (2016). <i>Bourgeois Equality: How Ideas, Not Capital or Institutions, Enriched the World</i>. Chicago: University of Chicago Press.","Yayıncı tanıtımı ve içindekiler"],
+  23:["Weber, M. (1904–05). Die protestantische Ethik und der Geist des Kapitalismus. <i>Archiv für Sozialwissenschaft und Sozialpolitik</i>, XX–XXI; gözden geçirilmiş basım 1920.","Yalnızca yayın bilgisi (Parsons çevirisinin önsözünden)"],
+  24:["Dakan, R., Feller, J. ve Anthropic (2025). <i>AI Fluency: Key Terminology Cheat Sheet</i> (4D Çerçevesi). CC BY-NC-SA 4.0.","Tam metin"],
+  25:["Voigtländer, N. ve Voth, H.-J. (2006). Why England? Demographic Factors, Structural Change and Physical Capital Accumulation during the Industrial Revolution. <i>Journal of Economic Growth</i>, 11(4), 319–361.","Yalnızca künye; haritada yer almayan demografik yaklaşım"]
+};
+
+/* x: 0 = maddi koşullar, 100 = fikirler ve kültür. y: 0 = Neden İngiltere?, 100 = Neden kalıcı büyüme? */
+const OKUL = [
+{id:"fiyat",ad:"Yüksek ücret, ucuz enerji",kisa:"Allen",kisi:"Robert C. Allen",soru:"ingiltere",x:17,y:14,durum:"tam",
+ eser:"<i>The British Industrial Revolution in Global Perspective</i> (2009); “Why the Industrial Revolution was British” (2011)",
+ tez:"Sanayi Devrimi’nin ünlü buluşları, İngiltere’nin kendine özgü ücret ve fiyat yapısına verilmiş tepkilerdir: emek pahalı, enerji ve sermaye ucuzdu. Bu yapı, emeğin yerine sermaye ve enerji koyan teknolojileri icat etmeyi yalnızca İngiltere’de kârlı kılıyordu [14].",
+ isleyis:["Ücretler dört anlamda yüksekti: döviz kuruyla rakiplerinkinden yüksek, geçim maliyetine göre yüksek, sermaye fiyatına göre yüksek ve kuzey ile batı Britanya’da enerji fiyatına göre son derece yüksek [14].",
+  "Ar-Ge iktisadi bir faaliyettir: yeni bir teknik ancak kullanılacaksa icat edilmeye değer, kullanılıp kullanılmayacağı da faktör fiyatlarına bağlıdır [14].",
+  "Yüksek ücretler, okuryazarlık, hesap bilgisi ve zanaat becerisi edinimini finanse ederek teknoloji arzını da artırdı [14].",
+  "Ücret ve fiyat yapısının kaynağı İngiltere’nin uluslararası ticaretteki başarısıdır; bu başarı merkantilizme ve emperyalizme çok şey borçludur [14].",
+  "Bilim ve kültür üzerine: Allen, bilimin ve kültürün rolünü yadsımaz; ancak Bilimsel Devrim’in ve Sanayi Aydınlanması’nın Avrupa çapında olgular olduğunu, dolayısıyla İngiltere’yi Kıta’dan ayıramayacağını savunur [14].",
+  "Allen’a göre kültür tek başına elverişsiz bir iktisadi ortamı telafi edemez: Hollanda yüksek ücretliydi ama ucuz kömürden yoksundu; Fransız devletinin desteklediği Cugnot’nun buharlı arabası gibi projeler teknik açıdan başarılı, iktisadi açıdan kârsızdı [14]."],
+ kanit:["Newcastle, emek maliyetinin enerji maliyetine oranının dünyada en yüksek olduğu yerdi; Çin’de ise yakıt emeğe göre pahalıydı [14].",
+  "Allen’ın hesabına göre Arkwright tipi bir iplik fabrikası İngiltere’de yılda yaklaşık %40, Fransa’da ise örtük olarak yaklaşık %9 getiri sağlıyordu [14].",
+  "1770’lerin şirket tanıtımlarında İngiliz cam üretiminin yakıt maliyeti Fransa’dakinin altıda biri olarak tahmin ediliyordu [14]."],
+ itiraz:["Humphries ve Schneider, el eğirmecilerinin ücretlerinin diğer kadın işçilerinkine göre bile düşük olduğunu; ne ücretlerin ne de birim emek maliyetini belirleyen parça başı ücretlerin spinning jenny’nin icadını ve yayılmasını açıklayacak bir seyir izlediğini savunur [20].",
+  "McCloskey, kömürü ve maddi koşullara dayanan öteki açıklamaları modern zenginleşmeyi açıklayamayan etkenler arasında sayar [2]."],
+ ders:"Slayt 18 (“Nehirler mi, fikirler mi?”) için en güçlü “maddi” yanıt.",
+ karsi:{etken:"Göreli faktör fiyatları (pahalı emek, ucuz kömür)",kanit:"Uluslararası ücret ve fiyat karşılaştırmaları [14]",itiraz:"Eğirmecilerin ücretleri yüksek değildi [20]; McCloskey maddi açıklamaları reddeder [2]"}},
+
+{id:"komur",ad:"Kömür ve sömürgeler",kisa:"Pomeranz",kisi:"Kenneth Pomeranz",soru:"ingiltere",x:14,y:38,durum:"ozet",
+ eser:"<i>The Great Divergence</i> (2000)",
+ tez:"1750 dolaylarında Avrupa’nın ve Doğu Asya’nın gelişmiş bölgeleri yaşam beklentisi, tüketim, ürün ve faktör piyasaları ile hanehalkı stratejileri bakımından şaşırtıcı ölçüde benzerdi. Ayrışmayı, kerestenin yerini alan kömürün elverişli konumu ve Amerika kıtasının sağladığı birincil ürünler açıklar [16].",
+ isleyis:["Kömür, Avrupa’nın toprağı yoğun kullanmamasını sorun olmaktan çıkardı ve enerji yoğun sanayilerin büyümesine izin verdi [16].",
+  "“Talihli küresel konjonktürler” Amerika kıtasını Avrupa için herhangi bir Asya çevresinden daha büyük bir birincil ürün kaynağı yaptı; böylece emek topraktan çekilebildi [16].",
+  "Doğu Asya’nın iç bölgeleri 1750 sonrasında nüfus ve imalatta büyüdüğü için dokuma merkezi Yangzi Deltası’na hammadde ihraç edemedi; çekirdek bölgenin büyümesi emek yoğun, kaynak tasarruflu yollara itildi [16]."],
+ kanit:["Avrupa ile Çin ve Japonya’nın çekirdek bölgeleri arasında yaşam standardı, tüketim ve piyasa karşılaştırmaları; çekirdek bölgelerin ekolojik açıdan Batı Avrupa’dan kötü durumda olmadığı bulgusu [16]."],
+ itiraz:["Pomeranz’ın sorusu “Neden İngiltere?” değil, “Neden Kuzeybatı Avrupa, neden Çin değil?” sorusudur. Bu nedenle “Büyük Ayrışma” kavramı, “Neden İngiltere?” sorusuyla özdeş değildir.",
+  "Allen da kömürü merkeze alır, fakat kömürü bir göreli fiyat olarak işler; Allen’a göre büyük olasılıkla yalnızca Liège–Mons bölgesi benzer bir emek/enerji oranına sahipti ve Belçika’nın kömür üretimi 1800’de İngiltere’ninkinin %13’üydü [14].",
+  "McCloskey kömürü reddettiği maddi açıklamalar arasında sayar [2]; Ridley ise kömürün yenilik dalgasının sönmesini engellediğini savunur [12]."],
+ ders:"Slayt 18 ve 22 (sanayi ve imparatorluk).",
+ karsi:{etken:"Coğrafi şans: kömür ve Amerika kıtası",kanit:"Avrupa–Doğu Asya karşılaştırmaları [16]",itiraz:"İngiltere’yi değil Avrupa’yı açıklar; kömürün kendi başına yeterliliği tartışmalı"}},
+
+{id:"kurum",ad:"Kurumlar ve inandırıcı taahhüt",kisa:"North ve Weingast",kisi:"Douglass North, Barry Weingast; Acemoglu, Johnson, Robinson",soru:"ingiltere",x:40,y:20,durum:"tam",
+ eser:"“Constitutions and Commitment” (1989) [17]; “The Rise of Europe” (2005) [18]",
+ tez:"1688 Şanlı Devrimi’ni izleyen kurumsal düzenlemeler, hükümetin mülkiyet haklarını koruma taahhüdünü inandırıcı kıldı [17]. Hükümdarın mülkiyet haklarını kendi lehine değiştirme olasılığı arttıkça yatırımın beklenen getirisi ve dolayısıyla yatırım teşviki düşer; büyüme için hükümdarın hakları yalnızca tanıması değil, onlara inandırıcı biçimde bağlanması gerekir [17].",
+ isleyis:["Devrim’den sonra Kraliyet, borç ve vergi koşullarındaki değişiklikler için Parlamento’nun onayına muhtaçtı; servet sahiplerini temsil eden Parlamento’nun artan rolü, kralın taahhütlerinden dönme olanağını belirgin biçimde azalttı. Yargıçlar da artık kralın keyfine göre görevden alınamıyordu [17].",
+  "Özel sermaye piyasaları kamu borç piyasasına paralel gelişti; özel kredi faizleri kabaca kamu faizlerini izledi [17].",
+  "Acemoglu ve arkadaşlarına göre Sanayi Devrimi’nin tohumları, Atlantik ticaretinde ve bu ticaretin kapitalist kurumların gelişimine verdiği ivmede atılmıştır [5]."],
+ kanit:["Devlet borcu 1688–1697 arasında yaklaşık 1 milyon sterlinden 17 milyon sterline yaklaştı [17].","Uzun vadeli devlet borçlanma faizi 1690’ların başında %14’ten 1730’larda %3’e indi [17].","Marx aynı mali devrimi, ulusal borcu ve 1694’te kurulan İngiltere Bankası’nı ilkel birikimin kaldıraçları olarak okur [21]: aynı olgunun iki karşıt yorumu."],
+ itiraz:["Eleştirmenlere göre en önemli reformlar Devrim’den önce kademeli olarak gerçekleşti; ne devlet borcu faizleri ne de mülkiyet haklarının uygulanması Devrim’den sonra keskin biçimde iyileşti. Cox ise farklı bir reform kümesini öne çıkararak Devrim’i yine de bir dönüm noktası sayar [15].",
+  "North ve Weingast, anlatılarının güçlü “Whig” tarihi öğeleri taşıdığını ve gerekli karşı-olgusal senaryoyu kuracak kanıtın bulunmadığını kendileri kabul eder [17].",
+  "Crafts: Sanayi Devrimi yıllarında kurumlarda belirgin bir iyileşme yoktu; “ilk modern ekonomi” Hollanda Cumhuriyeti ilk sanayi ülkesi olmadı. Kurumlar gerekli olabilir, ama yeterli olduklarına inanmak güçtür [5].",
+  "Patent hukuku 1852’ye, belki 1883’e kadar tatmin edici değildi; mucitler genellikle büyük servetler de edinmedi [5]."],
+ ders:"Slayt 3 (anayasal düzen) ve slayt 22; Aydınlanma’nın siyasal kazanımlarının iktisadi sonuçları.",
+ karsi:{etken:"Mülkiyet haklarını güvenceye alan siyasal kurumlar",kanit:"1688 sonrası devlet borcu, faiz oranları ve sermaye piyasaları [17]",itiraz:"Zamanlama uymuyor: kurumsal değişim Sanayi Devrimi’nden çok önce; Hollanda örneği"}},
+
+{id:"tarim",ad:"Tarımsal yapı ve emek",kisa:"Crafts (tarım)",kisi:"N. F. R. Crafts; Robert C. Allen; Mark Overton",soru:"ingiltere",x:27,y:55,durum:"tam",
+ eser:"Crafts (2005); Allen, “Tracking the Agricultural Revolution” (1999); Overton, <i>Agricultural Revolution in England</i> (1996)",
+ tez:"Britanya’nın erken sanayileşmesi, sanayideki üstün verimlilikten çok tarımsal yapının ürünüdür: kapitalist çiftçilik Britanya’da olağan biçimdi, Kıta’da değildi [5].",
+ isleyis:["Kapitalist çiftlik, emeği marjinal ürünü ücrete eşitlenene dek istihdam eder; köylü işletmesi ise daha fazla emeği toprağa bağlar. Kapitalist tarıma geçiş emeği tarımdan çeker [5].",
+  "Crafts–Harley simülasyonuna göre topraklarının üçte ikisi köylü işletmesinde olsaydı, 1841’de Britanya’da tarımda çalışanların payı %22 yerine %47 olurdu [5].",
+  "Gıda ithalatı artmasaydı ekonomi “çok daha az sanayileşmiş” olurdu [5]."],
+ kanit:["1840’ta Britanya’da tarımsal istihdam yaklaşık %22’ydi; aynı gelir düzeyinde Fransa’da %44 (1890), İtalya’da %55 (1910) [5].",
+  "Overton’a göre 1700–1850 arasında üretim, alanı ancak üçte bir genişleyen tarım arazisinde %170–180 arttı; tahıl verimleri yaklaşık iki buçuk katına çıktı [8].",
+  "Norfolk’ta yonca ve şalgam ekili alanın %9’undan (1660–1739) %49’una (1836) yükseldi; nadas azaldı, toprağa azot kazandırıldı [8]."],
+ itiraz:["Zamanlama tartışmalıdır: Allen’a göre tarım devrimi 1600–1750 arasında, küçük ölçekli açık tarla çiftçileri eliyle gerçekleşti; bu bulgu devrimi ikinci yarı 18. yüzyıldaki parlamento çitlemelerine bağlayan klasik yorumla çelişir [7].",
+  "Overton ise asıl atılımı 1750 sonrasına, yem bitkilerinin yaygınlaşmasına bağlar ve çiftçilerin zihniyetindeki değişimi fiyatlar kadar önemli sayar [8]."],
+ ders:"Slayt 20–21 (çitlemeler). Bu tartışma, çitlemelerin bir verimlilik meselesi mi yoksa bir bölüşüm meselesi mi olduğu sorusunu açar.",
+ karsi:{etken:"Kapitalist tarım ve gıda ithalatı",kanit:"İstihdam yapısı karşılaştırmaları, CGE simülasyonları [5]",itiraz:"Tarım devriminin zamanlaması tartışmalı (1600–1750 mi, 1750 sonrası mı?)"}},
+
+{id:"nicel",ad:"“Devrim” miydi? Nicel revizyon",kisa:"Crafts ve Harley",kisi:"N. F. R. Crafts, C. Knick Harley",soru:"buyume",x:28,y:86,durum:"tam",
+ eser:"“Output Growth and the British Industrial Revolution” (1992); Crafts (2004, 2005)",
+ tez:"Sanayi Devrimi, hızlı sanayileşmenin ama mütevazı büyümenin yaşandığı bir dönemdir; büyüme ani bir “kalkış” değil, kademeli bir hızlanma gösterir [5].",
+ isleyis:["Verimlilik artışı pamuk, yün, demir, kanallar, demiryolları ve gemiler gibi birkaç “modernleşmiş” sektörde yoğunlaştı [5].",
+  "Buhar 1830’dan önce büyümeye pek katkı yapmadı; etkisinin zirvesi Watt’tan yaklaşık yüz yıl sonra geldi ve ancak 1850 sonrası yüksek basınçlı buharla potansiyeline ulaştı [6].",
+  "Kademecilik, temel bir değişimin yokluğu anlamına gelmez: asıl ayırt edici özellik, sürdürülebilir teknolojik ilerleme yeteneğine sahip bir toplumun ortaya çıkışıdır [5].",
+  "Mokyr’in özlü ifadesiyle süreç “yavaş, o kadar da sanayi temelli olmayan ve daha da az devrimci” olabilir, yine de modern iktisadi büyümenin “ana köküdür” [1]."],
+ kanit:["Yıllık reel GSYH büyümesi: 1700–1760 %0,7; 1760–1801 %1,0; 1801–1831 %1,9; 1831–1873 %2,4 [5].",
+  "Toplam faktör verimliliği 1760–1801’de yıllık yalnızca %0,1 arttı [5].",
+  "Reel ücretler 1750–1820 arasında yerinde saydı, ardından yılda yaklaşık %1 artmaya başladı [5].",
+  "1830’da sabit buhar makinelerinin toplam gücü yalnızca 165.000 beygirgücüydü; su gücü birçok işte hâlâ geçerli bir seçenekti [5]."],
+ itiraz:["Eski görüş (Deane ve Cole, Feinstein) daha hızlı bir kopuşu savunuyordu; Temin ise verimlilik artışının daha geniş bir sanayi yelpazesine yayıldığını öne sürer [5]."],
+ ders:"Slayt 15 ve 18: “buhar makinesi → devrim” şemasına karşı veri.",
+ karsi:{etken:"Kademeli hızlanma; dar tabanlı verimlilik artışı",kanit:"Büyüme muhasebesi [5]",itiraz:"Ölçüm sorunları; daha hızlı kopuşu savunan eski görüş"}},
+
+{id:"talep",ad:"Çalışkanlık devrimi",kisa:"de Vries",kisi:"Jan de Vries; Hans-Joachim Voth",soru:"buyume",x:58,y:62,durum:"ozet",
+ eser:"“The Industrial Revolution and the Industrious Revolution” (1994); <i>The Industrious Revolution</i> (2008)",
+ tez:"Çalışkanlık devrimi, hem piyasaya sunulan mal ve emek arzını hem de piyasadan satın alınan mallara talebi artıran, hanehalkı temelli bir kaynak yeniden dağılımıydı. Arz yanlı Sanayi Devrimi’nden önce gelen, talep yanlı bir değişimdi [3].",
+ isleyis:["Hanehalkları boş zamanı ve ev içi üretimi azaltıp piyasa için daha çok çalıştı ve piyasadan daha çok satın aldı [3]. Bir örnek: ekmeğini, mumunu, kumaşını kendi üreten bir aile, ücret karşılığında daha uzun çalışıp çay, şeker ve basma satın almaya başlar.",
+  "De Vries’in 1994 makalesinin kaynakçasında Mandeville’in <i>Arıların Masalı</i>, Steuart’ın <i>Principles of Political Œconomy</i> eseri ve Hirschman’ın <i>Tutkular ve Çıkarlar</i>’ı yer alır [3]: 18. yüzyılın lüks tartışması bu düşüncenin öncülüdür."],
+ kanit:["Voth, Old Bailey mahkemesindeki tanık ifadelerinden zaman bütçeleri kurarak yıllık çalışma saatlerinin 18. yüzyıl ortası ile sonu arasında “hızla değiştiğini” gösterir [9]."],
+ itiraz:["Allen ve Weisdorf, temel bir tüketim sepetini sabitleyerek kırsal işçilerde iki “çalışkanlık devrimi” bulur; ancak ikisi de ekonomik sıkıntıdan kaynaklanır ve tüketim devriminin izi yoktur. Kentli işçilerde ise fiilî çalışma yılı ile sepet için gereken çalışma arasındaki açık, bir tüketim devrimi için geniş alan bırakır [4].",
+  "Aynı olgu, yani uzayan çalışma yılı, hem arzu (de Vries) hem zorunluluk (Allen–Weisdorf) olarak okunabilir."],
+ ders:"Slayt 13 (kahvehaneler), 15 (tüketim ve gösteriş) ve 23 (Engels).",
+ karsi:{etken:"Hanehalkının zaman ve tüketim tercihleri",kanit:"Çalışma saatleri, tereke ve tüketim verileri [3][9]",itiraz:"Uzayan çalışma yılı arzudan değil yoksulluktan kaynaklanmış olabilir [4]"}},
+
+{id:"bilgi",ad:"Faydalı bilgi ve Sanayi Aydınlanması",kisa:"Mokyr",kisi:"Joel Mokyr; Margaret Jacob, Larry Stewart",soru:"buyume",x:74,y:82,durum:"tam",
+ eser:"“The Intellectual Origins of Modern Economic Growth” (2005); <i>The Enlightened Economy</i> (2010); <i>A Culture of Growth</i> (2016)",
+ tez:"Sanayi Devrimi’nin entelektüel kökenleri, faydalı bilgiyi genişletmeyi ve doğa felsefesini teknik sorunlara uygulamayı hedefleyen 17. yüzyıl Bacon’cı programına uzanır. 18. yüzyıl Aydınlanması bu programı, bilgiye erişimi kolaylaştıran kurumlarla hayata geçirdi. Aydınlanma olmasaydı Sanayi Devrimi sürdürülebilir büyümeye dönüşemezdi [1].",
+ isleyis:["Sanayi Aydınlanması: bilgi yoluyla ekonomik ilerlemenin ve büyümenin mümkün ve arzu edilir olduğuna duyulan inanç [1].",
+  "Erişim maliyetlerinin düşüşü: ansiklopediler, teknik sözlükler, dergiler, gezici bilim konferansçıları, bilim cemiyetleri [1].",
+  "Yalnızca “hangi teknik işe yarıyor” değil, “neden işe yarıyor” sorusu soruldu; bu sayede buluşlar azalan getirilere takılıp sönmedi [1].",
+  "Bilenler (savants) ile yapanlar (fabricants) arasındaki mesafe, 1760’lardan itibaren yavaş da olsa kapandı; Birmingham Ay Cemiyeti bilim insanlarını, mekanikçileri ve girişimcileri bir araya getirdi [1]."],
+ kanit:["1700’de Londra’da yaklaşık 2.000 kahvehane vardı ve bunların birçoğu bilimsel konferans mekânıydı [1].",
+  "18. yüzyılda Fransız taşrasında 6.400’ü aşkın üyeye sahip 33 resmî bilim cemiyeti faaliyet gösteriyordu [1].",
+  "Mokyr 2025 Nobel İktisat Ödülü’nün yarısını “teknolojik ilerleme yoluyla sürdürülebilir büyümenin ön koşullarını belirlediği için” aldı [13]."],
+ itiraz:["Allen: Bilimsel Devrim ve Sanayi Aydınlanması Avrupa çapında olgulardı; İngiltere’yi Kıta’dan ayırmazlar. Üstelik Fransa kâğıt, saat, cam ve dokumada öndeydi [14].",
+  "Mokyr’in kendisi, 17. yüzyıl biliminin Sanayi Devrimi’nin kilit buluşlarını doğrudan ürettiğini savunmanın “çok güç” olduğunu kabul eder [1].",
+  "Crafts mekanizmayı benimser, ancak meyvesinin ancak 19. yüzyılın ikinci çeyreğinde alındığını vurgular [5]."],
+ ders:"Slayt 5, 6, 9, 11, 13 ve 14: dersin iki yarısını en doğrudan bağlayan okul.",
+ karsi:{etken:"Faydalı bilginin üretimi ve dolaşımı",kanit:"Bilim cemiyetleri, ansiklopediler, konferanslar, teknik literatür [1]",itiraz:"Avrupa çapında bir olgu; İngiltere’yi açıklamaz [14]"}},
+
+{id:"itibar",ad:"Burjuva itibarı ve retorik",kisa:"McCloskey",kisi:"Deirdre McCloskey",soru:"ikisi",x:88,y:46,durum:"tam",
+ eser:"<i>The Bourgeois Virtues</i> (2006); <i>Bourgeois Dignity</i> (2010); <i>Bourgeois Equality</i> (2016) [22]",
+ tez:"Piyasalar ve yenilik hakkındaki genel kanıda yaşanan büyük bir değişim Sanayi Devrimi’ne ve ardından modern dünyaya yol açtı. 17. ve 18. yüzyıllarda önce Hollandalılar, ardından İngilizler, Amerikalılar ve Fransızlar burjuvaziden itibarlı ve özgür bir sınıfmış gibi söz etmeye başladı [2].",
+ isleyis:["“Fikirler, ya da ‘retorik’, bizi zenginleştirdi.” McCloskey retoriği antik anlamında, yani zorlamasız ikna araçları olarak kullanır [2].",
+  "Değişen şey basiret (prudence) değildi; 1700 dolaylarında değişen, ekonomik ve entelektüel yeniliklerin bütün erdemler sistemi içinde nasıl değerlendirildiğiydi [2].",
+  "Güncel karşılığı: 1978 sonrası Çin ve 1991 sonrası Hindistan burjuvaziye daha önce esirgenen itibarı ve özgürlüğü tanıdı, ardından hızla büyüdü [2].",
+  "“Neden İngiltere?” sorusuna da yanıt verir: <i>Bourgeois Equality</i>’nin bölüm başlıklarına göre burjuva yanlısı bir retorik 1700 dolaylarında İngiltere’de biçimlenmiş, bu değişim “özellikle Britanya’ya özgü” olmuştur; Hollanda ise burjuva erdeminde İngiltere’den öndeydi [22]."],
+ kanit:["Kişi başı reel gelir, 2010 fiyatlarıyla 1800’de dünya genelinde günde yaklaşık 3 dolardan, “burjuva anlaşmasını” kabul eden yerlerde 100 doların üzerine çıktı [2]; Rubin bunu “en az on altı kat” bir artış olarak özetler [10].",
+  "Kitabın büyük kısmı rakip açıklamaları (Marx, Weber, North, Clark, Mokyr ve diğerleri) “on altı kat”ı açıklayamadıkları gerekçesiyle eler [10].",
+  "Birincil kaynak: Voltaire’in “Ticaret üzerine” mektubu, bir başbakanın bekleme odasında kölelik eden pudralı lordu, “ülkesini zenginleştiren, yazıhanesinden Surat’a ve Büyük Kahire’ye emirler gönderen ve dünyanın mutluluğuna katkıda bulunan” tüccarla karşılaştırır [11]."],
+ itiraz:["Rubin: Burjuva itibarının nereden geldiği açıklanmıyor; kültürel tutumlar kurumlara göre içsel olabilir [10].",
+  "Rubin: Değerlerdeki değişimin “on altı kat”ı açıklayabildiğine dair ampirik kanıt yok; McCloskey rakiplerine uyguladığı ölçütü kendi tezine uygulayamıyor [10].",
+  "Clark: Burjuva erdemleri 1800’den çok önce de vardı ve birçok toplumda gelip geçti; o hâlde Sanayi Devrimi neden yalnızca bir kez ve bu kadar geç gerçekleşti [12]?",
+  "Açık soru: Kamuoyu 1700’e kadar değiştiyse, Crafts–Harley rakamlarına göre büyüme neden 1800 sonrasına dek yavaş kaldı [5]?"],
+ ders:"Slayt 9 (Voltaire), 11 (yeni burjuva sınıfı) ve 15.",
+ karsi:{etken:"Burjuvaziye tanınan itibar ve özgürlük",kanit:"Söylem tarihi; rakip açıklamaların çürütülmesi [2][10]",itiraz:"İtibarın kökeni açıklanmıyor; nicel kanıt yok [10]"}},
+
+{id:"secilim",ad:"Malthusçu tuzak ve seçilim",kisa:"Clark",kisi:"Gregory Clark",soru:"ikisi",x:50,y:42,durum:"ozet",
+ eser:"<i>A Farewell to Alms</i> (2007). Kitabın kendisi bu çalışmada okunmadı; kart Trott’un değerlendirmesine dayanır [19].",
+ tez:"Sanayi öncesi ekonomi Malthusçu bir denge içindeydi: yaşam standardındaki her artış, azalan getiriler karşısında büyüyen nüfus tarafından eritiliyordu. Clark, İngiltere’nin bu tuzaktan ilk çıkan ülke olmasını, varlıklıların yoksullardan daha fazla hayatta kalan çocuk yetiştirmesine ve sabır, çalışkanlık, edinme hırsı ve öz denetim gibi “orta sınıf” değerlerinin genetik ya da kültürel yolla toplumun geneline yayılmasına bağlar [19].",
+ isleyis:["Clark, Aydınlanma’ya, Reformasyon’a ya da Bilimsel Devrim’e başvurmanın soruyu yalnızca bir adım geriye ittiğini ve kritik dönemde belirgin bir kurumsal değişimin bulunmadığını savunur [19].",
+  "Dönemin dört gözlenebilir değişimi: faizlerin çift haneden tek haneye düşmesi, okuryazarlığın artması, şiddetin azalması ve çalışmanın uzayıp disipline girmesi [19].",
+  "Clark, McCloskey’ye yanıtında kültürel değişimin tek başına yeterli olmadığını savunur: burjuva erdemleri pek çok toplumda gelip geçmiştir [12]."],
+ kanit:["Varlıklıların üreme avantajına ilişkin İngiliz verileri; Çin ve Japonya’da bu avantajın çok daha küçük olduğuna işaret eden sınırlı veriler [19]."],
+ itiraz:["Trott: değerlerin, servet ve bağlantılardan bağımsız olarak kalıtımla aktarıldığına dair kanıt zayıftır; seçilim baskısının nicel tutarlılığı da gösterilmemiştir [19].",
+  "Trott: sabır, çalışkanlık ve barışçıllığın kendiliğinden yeniliğe nasıl yol açacağı belirsizdir; erken sanayi dönemi mucitleri zaten az ödüllendiriliyordu [19].",
+  "McCloskey bu yaklaşımı “öjenik materyalizm” olarak niteleyerek reddeder; Rubin bu eleştiriyi “özellikle yıkıcı” bulur [10]."],
+ ders:"Açık soru: Davranış değişimi kültürel yolla mı aktarılır, biyolojik yolla mı? Trott’un aktarımına göre Clark bu soruyu açık bırakır [19].",
+ karsi:{etken:"Uzun dönemli davranış değişimi ve seçilim",kanit:"Servet ile hayatta kalan çocuk sayısı arasındaki ilişki [19]",itiraz:"Kalıtım kanıtı zayıf, değerlerden yeniliğe geçiş belirsiz [19]; “öjenik materyalizm” eleştirisi [10]"}},
+
+{id:"marx",ad:"İlkel birikim ve sınıf",kisa:"Marx",kisi:"Karl Marx; Marksist tarihyazımı",soru:"ingiltere",x:20,y:72,durum:"tam",klasik:true,
+ eser:"<i>Kapital</i>, I. cilt (1867), “ilkel birikim” bölümleri, özellikle 31. bölüm “Sanayi kapitalistinin doğuşu” [21]",
+ tez:"Tefeci ve tüccar sermayesinin sanayi sermayesine dönüşmesini kırda feodal düzen, kentte lonca örgütlenmesi engelliyordu; bu engeller feodal toplumun çözülmesi ve kır nüfusunun mülksüzleştirilip kısmen topraktan sürülmesiyle ortadan kalktı [21]. Amerika’daki altın ve gümüşün keşfi, yerli halkların köleleştirilmesi, Doğu Hint’in fethi ve yağması ve Afrika’nın köle avı alanına çevrilmesi, Marx’a göre ilkel birikimin başlıca anlarıdır [21].",
+ isleyis:["İngiltere’de 17. yüzyıl sonunda bu yöntemler sömürgeler, ulusal borç, modern vergi sistemi ve korumacılıktan oluşan sistemli bir bileşime kavuştu; hepsi devlet gücünü kullanarak geçişi hızlandırdı [21].","Kamu borcu “ilkel birikimin en güçlü kaldıraçlarından biri”dir; büyük bankaların tam gelişimi 1694’te İngiltere Bankası’nın kuruluşuyla başlar [21].","Pamuk sanayii İngiltere’de çocuk köleliğini başlatırken ABD’de köleliğin ticari bir sömürü sistemine dönüşmesini hızlandırdı [21]."],
+ kanit:["Marx’ın aktardığı verilere göre Liverpool’un köle ticaretindeki gemi sayısı 1730’da 15 iken 1792’de 132’ye yükseldi [21].","Fielden’dan aktarılan tanıklıklar, Lancashire ve Derbyshire’daki fabrikalara gönderilen yoksulhane çocuklarının koşullarını anlatır [21]."],
+ itiraz:["McCloskey, “Marx ve sınıfları”nı modern zenginleşmeyi açıklayamayan anlatılar arasında sayar [2].",
+  "Allen’ın tarım bulguları, verimlilik artışının 18. yüzyılın ikinci yarısındaki parlamento çitlemelerinden önce, 1600–1750 arasında ve açık tarlalarda gerçekleştiğini gösterir [7]. Bu bulgu daha erken dönemdeki mülksüzleşmeyi çürütmez, ama parlamento çitlemelerini bir verimlilik değil bölüşüm meselesi olarak okumaya alan açar.",
+  "North ve Weingast, aynı 1688 sonrası mali devrimi mülkiyet güvencesinin ve büyümenin ön koşulu olarak okur [17]."],
+ ders:"Slayt 20 (çitlemeler), 22–23 (burjuvazi ve proletarya, Engels).",
+ karsi:{etken:"Mülksüzleşme ve sermaye birikimi",kanit:"Kapital I, 31. bölüm: sömürgeler, köle ticareti, kamu borcu [21]",itiraz:"Tarımsal verimlilik parlamento çitlemelerinden önce arttı [7]; McCloskey’ye göre birikim zenginleşmeyi açıklamaz [2]"}},
+
+{id:"weber",ad:"Protestan ahlakı",kisa:"Weber",kisi:"Max Weber",soru:"ingiltere",x:84,y:30,durum:"genel",klasik:true,
+ eser:"<i>Protestan Ahlakı ve Kapitalizmin Ruhu</i> (1904–05; gözden geçirilmiş basım 1920) [23]",
+ tez:"Genel bilgi düzeyinde özet: Kalvinist dünyevi çilecilik, düzenli çalışmayı ve birikimi dinî bir ödev hâline getirerek modern kapitalizmin “ruhunu” biçimlendirdi.",
+ isleyis:["Meslek fikri ve dünyevi çilecilik → disiplinli çalışma ve yeniden yatırım (genel bilgi)."],
+ kanit:["Tezin içeriği bu çalışmada asıl metinden incelenmedi; yalnızca yayın bilgisi doğrulandı [23]."],
+ itiraz:["Weber’in konusu Sanayi Devrimi değil, modern Batı kapitalizminin “ruhu”dur; tez, Sanayi Devrimi’ni doğrudan açıklamayı hedeflemez.",
+  "McCloskey, “Weber ve Protestanları”nı da reddettiği açıklamalar arasında sayar; ona göre mesele basiret ya da tutumluluk değil, yeniliğe tanınan itibardır [2]."],
+ ders:"Slayt 5 (Reformasyon) ile McCloskey arasında köprü.",
+ karsi:{etken:"Dinsel kökenli çalışma etiği",kanit:"Yayın bilgisi doğrulandı [23]; içerik genel bilgi",itiraz:"Tutumluluk her zaman vardı; değişen yeniliğe tanınan itibardı [2]"}}
+];
+
+const SINAV = [
+ {i:"“Newcastle, emek maliyetinin enerji maliyetine oranının dünyada en yüksek olduğu yerdi.”",c:"fiyat",a:"Allen’a göre bu oran, enerji yoğun ve emek tasarruflu buluşları İngiltere’de kârlı kılıyordu [14]."},
+ {i:"“Kömür ve Yeni Dünya, Avrupa’nın kaynak yoğun, emek tasarruflu bir yolda büyümesini sağladı.”",c:"komur",a:"Pomeranz için ayrışma, Avrupa ile Asya’nın çekirdek bölgeleri arasındaki şaşırtıcı benzerliklere rağmen ortaya çıkar [16]."},
+ {i:"“1688 sonrası anayasal reformlar Kraliyet’in taahhütlerini inandırıcı kıldı ve kamu maliyesini güçlendirdi.”",c:"kurum",a:"North ve Weingast’ın tezi; eleştirmenler reformların Devrim’den önce kademeli geldiğini öne sürer [15]."},
+ {i:"“Teknikler yalnızca ‘hangisi işe yarıyor’ diye değil, ‘neden işe yarıyor’ diye de soruldu.”",c:"bilgi",a:"Mokyr’e göre bu soru, buluşların azalan getirilere takılıp sönmesini engelledi [1]."},
+ {i:"“Bizi zenginleştiren fikirler, yani ‘retorik’tir.”",c:"itibar",a:"McCloskey’ye göre değişen, burjuvaziye tanınan itibar ve özgürlüktü [2]."},
+ {i:"“Hanehalkları boş zamanlarını ve ev içi üretimlerini piyasa için çalışmaya kaydırdı.”",c:"talep",a:"De Vries bu talep yanlı değişimin Sanayi Devrimi’nden önce geldiğini savunur [3]."},
+ {i:"“Bu dönem hızlı sanayileşmenin ama mütevazı büyümenin dönemiydi.”",c:"nicel",a:"Crafts–Harley tahminlerine göre 1760–1801 arasında reel GSYH yılda yalnızca %1,0 büyüdü [5]."},
+ {i:"“Britanya’yı bu kadar erken sanayileşmiş gösteren şey makineler değil, kapitalist çiftçilikti.”",c:"tarim",a:"Crafts’ın simülasyonunda köylü işletmesi ağırlıklı bir Britanya, emeğin %47’sini tarımda tutardı [5]."},
+ {i:"“1700 dolaylarında değişen, insanların basireti değil, ekonomik ve entelektüel yeniliklerin bütün erdemler sistemi içinde nasıl değerlendirildiğiydi.”",c:"itibar",a:"McCloskey’ye göre insanlar her zaman basiretliydi; değişen, yeniliğe ve onu yapanlara tanınan itibardı [2]."},
+ {i:"“Sanayi öncesi İngiltere’de varlıklılar yoksullardan daha fazla hayatta kalan çocuk yetiştirdi; orta sınıf değerleri bu yolla toplumun geneline yayıldı.”",c:"secilim",a:"Clark’ın “en zenginlerin hayatta kalması” tezi; Trott, değerlerin kalıtımla aktarıldığına dair kanıtın zayıf olduğunu belirtir [19]."}
+];
+
+/* Yardımcılar */
+const $ = s => document.querySelector(s);
+const hex = h => [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const KOK = hex("#9E2A2B"), CIV = hex("#1F2D55");
+function renk(x){const t=x/100;const c=KOK.map((v,i)=>Math.round(v+(CIV[i]-v)*t));return `rgb(${c.join(",")})`;}
+function refler(s){return s.replace(/\[(\d+)\]/g,(m,n)=>`<a href="#k${n}" class="ref" data-ref="${n}" title="${KAYNAK[n]?KAYNAK[n][0].replace(/<[^>]+>/g,""):""}">[${n}]</a>`);}
+const DURUM = {tam:["tam","Tam metne dayalı"],ozet:["ozet","Özet / tanıtım metnine dayalı"],genel:["genel","Genel bilgi; asıl metinden doğrulanmadı"]};
+const SORU = {ingiltere:"Asıl sorusu: Neden İngiltere (ya da Kuzeybatı Avrupa)?",buyume:"Asıl sorusu: Neden kalıcı büyüme, neden bu dönemde?",ikisi:"Asıl sorusu: Hem neden İngiltere (Kuzeybatı Avrupa), hem neden kalıcı büyüme?"};
+
+/* Harita */
+document.querySelectorAll(".dugum").forEach(b=>b.addEventListener("click",()=>sec(b.dataset.id)));
+function liste(a){return `<ul>${a.map(x=>`<li>${refler(x)}</li>`).join("")}</ul>`;}
+function sec(id){
+  const o=OKUL.find(k=>k.id===id);
+  document.querySelectorAll(".dugum").forEach(d=>d.setAttribute("aria-pressed",d.dataset.id===id?"true":"false"));
+  const p=$("#panel");p.classList.remove("bos");p.style.setProperty("--renk",renk(o.x));
+  const d=DURUM[o.durum];
+  p.innerHTML=`<h2>${o.ad}</h2>
+   <p class="yazar">${o.kisi}${o.klasik?" · klasik çerçeve":""}</p>
+   <p><span class="rozet ${d[0]}">${d[1]}</span> <span class="soru-etiket">${SORU[o.soru]}</span></p>
+   <h3>Temel eserler</h3><p>${refler(o.eser)}</p>
+   <h3>Temel tez</h3><p>${refler(o.tez)}</p>
+   <h3>İşleyiş</h3>${liste(o.isleyis)}
+   <h3>Kanıtlar</h3>${liste(o.kanit)}
+   <h3>Eleştiriler ve sınırlar</h3>${liste(o.itiraz)}
+   <h3>Dersteki yeri</h3><p>${refler(o.ders)}</p>`;
+  if(window.matchMedia("(max-width:900px)").matches) p.scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.querySelectorAll(".filtre button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".filtre button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+  const f=b.dataset.f;
+  document.querySelectorAll(".dugum").forEach(d=>d.classList.toggle("soluk",f!=="hepsi"&&d.dataset.soru!==f&&d.dataset.soru!=="ikisi"));
+}));
+
+/* Sekmeler */
+const sekmeler=[...document.querySelectorAll('[role="tab"]')];
+function sekme(id){
+  sekmeler.forEach(t=>{const on=t.id===id;t.setAttribute("aria-selected",on);document.getElementById(t.getAttribute("aria-controls")).hidden=!on;});
+}
+sekmeler.forEach(t=>t.addEventListener("click",()=>sekme(t.id)));
+sekme("t-harita");
+document.addEventListener("click",e=>{
+  const a=e.target.closest("a.ref");if(!a)return;
+  e.preventDefault();sekme("t-kaynak");
+  const li=document.getElementById("k"+a.dataset.ref);
+  document.querySelectorAll("ol.kaynak li").forEach(x=>x.classList.remove("isik"));
+  if(li){li.classList.add("isik");li.scrollIntoView({behavior:"smooth",block:"center"});}
+});
+
+/* Kaynakça */
+
+/* Karşılaştır */
+const k1=$("#k1"),k2=$("#k2");
+[k1,k2].forEach(s=>s.innerHTML=OKUL.map(o=>`<option value="${o.id}">${o.ad} (${o.kisa})</option>`).join(""));
+k1.value="fiyat";k2.value="bilgi";
+function karsilastir(){
+  const a=OKUL.find(o=>o.id===k1.value),b=OKUL.find(o=>o.id===k2.value);
+  const satir=(baslik,f)=>`<tr><th scope="row">${baslik}</th><td>${refler(f(a))}</td><td>${refler(f(b))}</td></tr>`;
+  $("#ktablo").innerHTML=`<thead><tr><th></th><th scope="col" style="border-top:4px solid ${renk(a.x)}">${a.ad}<br><small>${a.kisi}</small></th><th scope="col" style="border-top:4px solid ${renk(b.x)}">${b.ad}<br><small>${b.kisi}</small></th></tr></thead><tbody>
+   ${satir("Asıl soru",o=>SORU[o.soru].replace("Asıl sorusu: ",""))}
+   ${satir("Belirleyici etken",o=>o.karsi.etken)}
+   ${satir("Temel kanıt",o=>o.karsi.kanit)}
+   ${satir("En güçlü itiraz",o=>o.karsi.itiraz)}
+   ${satir("Dersteki yeri",o=>o.ders)}
+   ${satir("Kaynak durumu",o=>DURUM[o.durum][1])}</tbody>`;
+}
+k1.addEventListener("change",karsilastir);k2.addEventListener("change",karsilastir);karsilastir();
+
+/* Kendini sına */
+let sira=[],no=0,puan=0,cevaplandi=false;
+function karistir(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function basla(){sira=karistir(SINAV);no=0;puan=0;soruGoster();}
+function soruGoster(){
+  cevaplandi=false;const s=sira[no];
+  const yanlis=karistir(OKUL.filter(o=>o.id!==s.c&&!o.klasik)).slice(0,3);
+  const sec=karistir([OKUL.find(o=>o.id===s.c),...yanlis]);
+  $("#sinav").innerHTML=`<p class="soru-etiket">Soru ${no+1} / ${sira.length}. Bu ifade hangi okula aittir?</p>
+   <p class="ifade">${s.i}</p>
+   <div class="secenekler">${sec.map(o=>`<button data-id="${o.id}">${o.ad} <span style="color:var(--soluk)">(${o.kisa})</span></button>`).join("")}</div>
+   <div id="gb"></div>
+   <div class="sinav-alt" id="alt0"><span>Puan: ${puan} / ${no}</span><span><button class="btn ikincil" id="yeniden">Baştan başla</button></span></div>`;
+  document.querySelectorAll(".secenekler button").forEach(b=>b.addEventListener("click",()=>cevap(b,s)));
+  $("#yeniden").addEventListener("click",basla);
+}
+function cevap(b,s){
+  if(cevaplandi)return;cevaplandi=true;
+  const dogru=b.dataset.id===s.c;if(dogru)puan++;
+  document.querySelectorAll(".secenekler button").forEach(x=>{if(x.dataset.id===s.c)x.classList.add("dogru");else if(x===b)x.classList.add("yanlis");x.disabled=true;});
+  const o=OKUL.find(k=>k.id===s.c);
+  const son=no===sira.length-1;
+  $("#gb").innerHTML=`<div class="geri-bildirim"><strong>${dogru?"Doğru.":"Yanlış. Doğru yanıt: "+o.ad+" ("+o.kisa+")."}</strong> ${refler(s.a)}</div>
+   <div class="sinav-alt"><span>Puan: ${puan} / ${no+1}</span><span><button class="btn ikincil" id="yeniden2">Baştan başla</button> <button class="btn" id="ileri">${son?"Sonucu gör":"Sonraki soru"}</button></span></div>`;
+  const alt0=document.getElementById("alt0"); if(alt0) alt0.remove();
+  $("#yeniden2").addEventListener("click",basla);
+  $("#ileri").addEventListener("click",()=>{if(son)sonuc();else{no++;soruGoster();}});
+  $("#ileri").focus();
+}
+function sonuc(){
+  $("#sinav").innerHTML=`<p class="ifade">${sira.length} sorudan ${puan} doğru.</p>
+   <p>Karıştırılan okulları Harita’da yeniden inceleyin; özellikle aynı olguyu farklı yorumlayan çiftlere (de Vries ve Allen–Weisdorf, Mokyr ve Allen) dikkat edin.</p>
+   <button class="btn" id="yeniden">Yeniden başla</button>`;
+  $("#yeniden").addEventListener("click",basla);
+}
+basla();
+})();
+</script>
+</body>
+</html>
